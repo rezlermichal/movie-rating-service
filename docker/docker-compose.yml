@@ -1,0 +1,40 @@
+services:
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:14.18
+    container_name: postgres
+    environment:
+      POSTGRES_USER: movie_rating_user
+      POSTGRES_PASSWORD: movie_rating_user
+      POSTGRES_DB: movie_rating
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Prometheus Service
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  # Grafana Service
+  grafana:
+    image: grafana/grafana:12.2.0-16636675413
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+
+volumes:
+  postgres-data:
