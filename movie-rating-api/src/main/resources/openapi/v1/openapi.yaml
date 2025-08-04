@@ -42,6 +42,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PageMovieApiDto"
+        '204':
+          description: Returned page contains no data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageMovieApiDto"
         '400':
           description: Bad request
           content:
@@ -226,6 +232,10 @@ components:
     MovieApiDto:
       description: Information about a movie
       properties:
+        id:
+          description: Numeric ID of the movie
+          type: integer
+          format: int64
         name:
           description: Name of the movie
           type: string

@@ -1,6 +1,7 @@
-package com.github.movierating.api.rest;
+package com.github.movierating.api.rest.controller;
 
 import com.github.movierating.api.rest.dto.v1.FindMoviesPagingSortingParameter;
+import com.github.movierating.api.rest.mapper.MovieApiDtoMapper;
 import lombok.AllArgsConstructor;
 import com.github.movierating.api.rest.controller.v1.MoviesApi;
 import com.github.movierating.api.rest.dto.v1.PageMovieApiDto;
@@ -15,9 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class MoviesController implements MoviesApi {
 
     private final MovieService movieService;
+    private final MovieApiDtoMapper movieApiDtoMapper;
 
     @Override
-    public ResponseEntity<PageMovieApiDto> findMovies(FindMoviesPagingSortingParameter pagingSorting) {
-        return null;
+    public ResponseEntity<PageMovieApiDto> findMovies(final FindMoviesPagingSortingParameter pagingSorting) {
+        log.debug("Received request to findMovies {}", pagingSorting);
+        var response = movieApiDtoMapper.map(movieService.findAll(movieApiDtoMapper.map(pagingSorting)));
+        log.debug("Returning a page with movies {}", response);
+        return ResponseEntity.ok(response);
     }
 }

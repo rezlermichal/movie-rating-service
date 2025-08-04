@@ -9,6 +9,21 @@ management:
       exposure:
         include: "*"
 
+spring:
+  name: movie-rating-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movie_rating
+    username: movie_rating_user
+    password: movie_rating_user
+    hikari:
+      maximumPoolSize: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: public
+
 logging:
   level:
     com.github.movierating: INFO

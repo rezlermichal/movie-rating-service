@@ -1,4 +1,4 @@
-package com.github.movierating.api.rest;
+package com.github.movierating.api.rest.controller;
 
 import com.github.movierating.api.rest.controller.v1.MovieRatingApi;
 import lombok.AllArgsConstructor;

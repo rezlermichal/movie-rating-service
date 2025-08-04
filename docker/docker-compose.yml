@@ -8,7 +8,8 @@ services:
       POSTGRES_PASSWORD: movie_rating_user
       POSTGRES_DB: movie_rating
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - ./posgresql/data:/var/lib/postgresql/data
+      - ./posgresql/init:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
 
