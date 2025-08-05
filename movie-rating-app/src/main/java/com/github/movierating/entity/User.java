@@ -2,23 +2,23 @@ package com.github.movierating.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import lombok.Setter;
 
-@Entity(name = "users")
+@Entity(name = "USERS")
 @Setter
-public class User {
+@SequenceGenerator(name = "DEFAULT_GEN", sequenceName = "USER_SEQUENCE")
+public class User extends CommonEntity {
 
-    @Id
     private String email;
     private String password;
 
-    @Column(name = "email")
+    @Column(name = "EMAIL")
     public String getEmail() {
         return email;
     }
 
-    @Column(name = "password")
+    @Column(name = "PASSWORD")
     public String getPassword() {
         return password;
     }

@@ -1,7 +1,7 @@
-package com.github.movierating.api.rest.controller;
+package com.github.movierating.api.rest.v1.controller;
 
 import com.github.movierating.api.rest.dto.v1.FindMoviesPagingSortingParameter;
-import com.github.movierating.api.rest.mapper.MovieApiDtoMapper;
+import com.github.movierating.api.rest.v1.mapper.MovieApiDtoMapper;
 import lombok.AllArgsConstructor;
 import com.github.movierating.api.rest.controller.v1.MoviesApi;
 import com.github.movierating.api.rest.dto.v1.PageMovieApiDto;

@@ -1,4 +1,4 @@
-package com.github.movierating.api.rest.mapper;
+package com.github.movierating.api.rest.v1.mapper;
 
 import com.github.movierating.api.rest.dto.v1.FindMoviesPagingSortingParameter;
 import com.github.movierating.api.rest.dto.v1.PageMovieApiDto;
