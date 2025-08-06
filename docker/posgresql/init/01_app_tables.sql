@@ -13,6 +13,8 @@ CREATE TABLE users
     enabled  INT          NOT NULL    DEFAULT 1
 );
 
+CREATE INDEX IX1_USERS ON users (email);
+
 CREATE TABLE movie
 (
     id       BIGINT       NOT NULL    PRIMARY KEY,
@@ -31,6 +33,8 @@ CREATE TABLE rating
     FOREIGN KEY (user_id)  REFERENCES users (id),
     FOREIGN KEY (movie_id) REFERENCES movie (id)
 );
+
+CREATE UNIQUE INDEX IX1_RATING ON rating (user_id, movie_id);
 
 CREATE TABLE authorities
 (
