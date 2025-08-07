@@ -57,16 +57,11 @@ public class MovieRatingServiceImpl implements MovieRatingService {
 
         validateRatingData(rating, movie, user);
 
-        //@TODO endpoint for top movies - ?extraFields=avgRating
-        //@TODO authorized vs unauthorized APIs
-        //@TODO check required fields in openapi
-        //@TODO check validation - min and max in openapi
-        //@TODO check validation - add userEmail to RatingApiDto ???
+        //@TODO check validation - add userEmail to RatingApiDto ??? if so - set min and max length of string
         //@TODO check validation - junit tests
         //@TODO check validation - integration tests
-        //@TODO check validation - controller advice - handle all possible exceptions
         //@TODO check csrf - learn something about it and comment why I disabled it
-        //@TODO check describe all returned http codes in openapi swagger
+        //@TODO micrometer?
         rating.setRatedAt(LocalDateTime.now());
         rating.setRating(ratingDto.rating());
 

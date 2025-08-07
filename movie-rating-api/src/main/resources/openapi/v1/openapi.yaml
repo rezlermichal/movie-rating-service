@@ -12,38 +12,41 @@ paths:
       summary: "Returns a paged list of movies"
       operationId: findMovies
       parameters:
-        - in: query
-          name: pagingSorting
+        - name: pageNumber
+          in: query
+          description: Number of the page (0 based)
           schema:
-            type: object
-            properties:
-              pageNumber:
-                type: integer
-                default: 0
-                minimum: 0
-              pageSize:
-                type: integer
-                default: 20
-                minimum: 1
-                maximum: 100
-              sortBy:
-                type: string
-                example: rating
-              order:
-                type: string
-                enum:
-                  - ASC
-                  - DESC
-          description: Paging and sorting object.
+            type: integer
+            default: 0
+            minimum: 0
+        - name: pageSize
+          in: query
+          description: Required size of the page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: sortBy
+          in: query
+          description: Name of the field that should be used for sorting
+          schema:
+            $ref: "#/components/schemas/MovieSortableFields"
+        - name: order
+          in: query
+          description: Required direction of sorting (ascending or descending)
+          schema:
+            $ref: "#/components/schemas/SortOrder"
+        - name: extraFields
+          in: query
+          description: Additional fields that should be included projected
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ProjectionExtraField"
       responses:
         '200':
           description: List of movies wrapped in page
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PageMovieApiDto"
-        '204':
-          description: Returned page contains no data
           content:
             application/json:
               schema:
@@ -89,10 +92,6 @@ paths:
                 $ref: "#/components/schemas/ErrorResponseApiDto"
         '401':
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponseApiDto"
         '404':
           description: Movie was not found
           content:
@@ -112,7 +111,7 @@ paths:
             type: integer
             format: int64
           required: true
-          description: Numeric ID of the movie being rated
+          description: Numeric ID of the affected movie
         - in: path
           name: ratingId
           schema:
@@ -141,10 +140,6 @@ paths:
                 $ref: "#/components/schemas/ErrorResponseApiDto"
         '401':
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponseApiDto"
         '403':
           description: Forbidden to perform the operation
           content:
@@ -169,7 +164,7 @@ paths:
             type: integer
             format: int64
           required: true
-          description: Numeric ID of the movie being rated
+          description: Numeric ID of the affected movie
         - in: path
           name: ratingId
           schema:
@@ -188,10 +183,6 @@ paths:
                 $ref: "#/components/schemas/ErrorResponseApiDto"
         '401':
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponseApiDto"
         '403':
           description: Forbidden to perform the operation
           content:
@@ -217,6 +208,9 @@ components:
             $ref: "#/components/schemas/ErrorApiDto"
     ErrorApiDto:
       type: object
+      required:
+        - code
+        - message
       properties:
         code:
           type: string
@@ -225,6 +219,12 @@ components:
     PageMovieApiDto:
       description: Page with movies
       type: object
+      required:
+        - content
+        - pageNumber
+        - pageSize
+        - totalPages
+        - totalElements
       properties:
         content:
           type: array
@@ -245,6 +245,9 @@ components:
           format: int64
     MovieApiDto:
       description: Information about a movie
+      required:
+        - id
+        - name
       properties:
         id:
           description: Numeric ID of the movie
@@ -253,6 +256,10 @@ components:
         name:
           description: Name of the movie
           type: string
+        avgRating:
+          description: Average rating of the movie (scale 1-10)
+          type: decimal
+          nullable: true
     RatingApiDto:
       description: Rating - number between 1 and 10 (10 is the best)
       required:
@@ -267,8 +274,8 @@ components:
       description: Information about a rating
       required:
         - id
-        - movieName
-        - userEmail
+        - movie
+        - user
         - rating
         - ratedAt
       properties:
@@ -304,4 +311,20 @@ components:
         email:
           description: Email of the user
           type: string
+    ProjectionExtraField:
+      description: Extra fields in projection (e.g. AVG_RATING)
+      type: string
+      enum:
+        - AVG_RATING
+    SortOrder:
+      type: string
+      enum:
+        - ASC
+        - DESC
+    MovieSortableFields:
+      type: string
+      example: "NAME"
+      enum:
+        - NAME
+        - AVG_RATING
 

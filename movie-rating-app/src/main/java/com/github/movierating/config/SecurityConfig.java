@@ -22,6 +22,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> {
                     request.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
                     request.requestMatchers("/actuator/**").permitAll();
+                    request.requestMatchers("/rest/v1/movies").permitAll();
                     request.anyRequest().authenticated();
             })
             .httpBasic(Customizer.withDefaults())

@@ -9,30 +9,18 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-    /*
-select m.*, r.avg_rating
-from movie m
-join (
-	select r.movie_id, avg(r.rating) as avg_rating
-	from public.rating r
-	group by r.movie_id
-) r on r.movie_id = m.id
-order by r.avg_rating desc;
-     */
-
     @Query(value = """
-            select m.id, m.name, r.avgRating
+            select m.id, m.name, r.avg_rating
             from movie m
-            join (
-            	select r.movie_id, avg(r.rating) as avgRating
+            left join (
+            	select r.movie_id, avg(r.rating) as avg_rating
             	from rating r
             	group by r.movie_id
             ) r on r.movie_id = m.id
     """,
     countQuery = """
             select count(*)
-            from rating r
-            group by r.movie_id
+            from movie m
     """,
     nativeQuery = true)
     Page<MovieDto> findAllWithAvgRating(Pageable pageable);

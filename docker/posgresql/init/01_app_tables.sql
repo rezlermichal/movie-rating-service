@@ -36,13 +36,13 @@ CREATE TABLE rating
 
 CREATE UNIQUE INDEX IX1_RATING ON rating (user_id, movie_id);
 
-CREATE TABLE authorities
+CREATE TABLE authorities -- not used, it is here just because spring security requires it
 (
     email     VARCHAR(50) NOT NULL,
     authority VARCHAR(50) NOT NULL,
     FOREIGN KEY (email) REFERENCES users (email)
 );
 
-CREATE SEQUENCE user_sequence START 1 INCREMENT BY 50;
-CREATE SEQUENCE movie_sequence START 1 INCREMENT BY 50;
-CREATE SEQUENCE rating_sequence START 1 INCREMENT BY 50;
+CREATE SEQUENCE user_sequence START 1000 INCREMENT BY 50;
+CREATE SEQUENCE movie_sequence START 1000 INCREMENT BY 50;
+CREATE SEQUENCE rating_sequence START 1000 INCREMENT BY 50;

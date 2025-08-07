@@ -5,6 +5,7 @@ import com.github.movierating.api.rest.dto.v1.ErrorResponseApiDto;
 import com.github.movierating.enums.ErrorCode;
 import com.github.movierating.exception.*;
 import com.github.movierating.service.LocalizationService;
+import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -27,11 +29,25 @@ public class ExceptionHandlingControllerAdvice {
         return createErrorResponseApiDto("INVALID_REQUEST_CONTENT", exception.getMessage());
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseApiDto handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception) {
+        log.debug("MethodArgumentTypeMismatchException occurred", exception);
+        return createErrorResponseApiDto("INVALID_REQUEST_CONTENT", exception.getMessage());
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponseApiDto handleEntityNotFoundException(EntityNotFoundException exception) {
         log.debug("EntityNotFoundException occurred", exception);
         return createErrorResponseApiDto(exception.getErrorCode());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseApiDto handleConstraintViolationException(ConstraintViolationException exception) {
+        log.debug("ConstraintViolationException occurred", exception);
+        return createErrorResponseApiDto("INVALID_REQUEST_CONTENT", exception.getMessage());
     }
 
     @ExceptionHandler(EntityAlreadyExistsException.class)

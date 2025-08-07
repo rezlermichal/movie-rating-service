@@ -16,4 +16,8 @@ public interface MovieMapper {
     @Mapping(target = "pageSize", source = "size")
     PageDto<MovieDto> map(Page<Movie> moviePage);
 
+    @Mapping(target = "pageNumber", source = "number")
+    @Mapping(target = "pageSize", source = "size")
+    PageDto<MovieDto> mapPage(Page<MovieDto> moviePage);
+
 }
