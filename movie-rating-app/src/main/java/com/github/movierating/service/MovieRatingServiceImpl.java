@@ -57,11 +57,11 @@ public class MovieRatingServiceImpl implements MovieRatingService {
 
         validateRatingData(rating, movie, user);
 
-        //@TODO check validation - add userEmail to RatingApiDto ??? if so - set min and max length of string
         //@TODO check validation - junit tests
         //@TODO check validation - integration tests
         //@TODO check csrf - learn something about it and comment why I disabled it
         //@TODO micrometer?
+        //@TODO readme - how to run, how to compile, zminit liquibase
         rating.setRatedAt(LocalDateTime.now());
         rating.setRating(ratingDto.rating());
 
