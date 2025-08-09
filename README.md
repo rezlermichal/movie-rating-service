@@ -10,7 +10,7 @@
 - PostgreSQL used as a underlying database
 - Database tables are generated and filled in with initial data by init script as a part of docker-compose. For database change management I would use e.g. Liquibase in real project.
 - Junit tests: I haven't covered all the code but I created 1 class with tests for controller (@WebMvcTest), 1 class with test for service layer (using JUnit and Mockito) and 1 test for DAO layer (@DataJpaTest). Just to show how I write them.
-- Integration test: I've create integration tests for create/update/delete movie rating with use of `testcontainers` for DB level. It is a `@SpringBootTest` where I simply send HTTP requests to the application using `rest-assured` library
+- Integration test: I've create integration tests for create/update/delete movie rating with use of `testcontainers` for DB level. It is a `@SpringBootTest` where I simply send HTTP requests to the application using `rest-assured` library. Once the requests are processed I check database records whether they were changed accordingly.
 - To make some things easier the application runs on HTTP only as of now
 
 ### Monitoring
