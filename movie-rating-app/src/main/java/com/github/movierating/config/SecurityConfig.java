@@ -12,7 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -41,8 +40,8 @@ public class SecurityConfig {
                 where email = ?
         """);
         userDetailsManager.setAuthoritiesByUsernameQuery("""
-                select email,authority
-                from authorities
+                select email,'role'
+                from users
                 where email = ?
         """);
         return userDetailsManager;
