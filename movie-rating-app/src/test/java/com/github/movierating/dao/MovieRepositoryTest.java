@@ -5,6 +5,7 @@ import com.github.movierating.entity.Rating;
 import com.github.movierating.entity.User;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -44,6 +45,13 @@ class MovieRepositoryTest {
         postgres.stop();
     }
 
+    @BeforeEach
+    void setUp() {
+        ratingRepository.deleteAll();
+        userRepository.deleteAll();
+        movieRepository.deleteAll();
+    }
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -57,19 +65,7 @@ class MovieRepositoryTest {
         var topGun = createMovie("top gun");
         var godFather = createMovie("The Godfather");
 
-        var user1 = createUser("user1@gmail.com");
-        var user2 = createUser("user2@gmail.com");
-        var user3 = createUser("user3@gmail.com");
-
-        createRating(harryPotter, user1, 5);
-        createRating(harryPotter, user2, 6);
-        createRating(harryPotter, user3, 7);
-        createRating(topGun, user1, 4);
-        createRating(topGun, user2, 5);
-        createRating(topGun, user3, 6);
-        createRating(godFather, user1, 8);
-        createRating(godFather, user2, 9);
-        createRating(godFather, user3, 10);
+        prepareUsersAndRating(harryPotter, topGun, godFather);
 
         var result = movieRepository.findAllWithAvgRating(PageRequest.of(0, 10, Sort.unsorted()));
         assertEquals(0, result.getNumber());
@@ -88,19 +84,7 @@ class MovieRepositoryTest {
         var topGun = createMovie("top gun");
         var godFather = createMovie("The Godfather");
 
-        var user1 = createUser("user1@gmail.com");
-        var user2 = createUser("user2@gmail.com");
-        var user3 = createUser("user3@gmail.com");
-
-        createRating(harryPotter, user1, 5);
-        createRating(harryPotter, user2, 6);
-        createRating(harryPotter, user3, 7);
-        createRating(topGun, user1, 4);
-        createRating(topGun, user2, 5);
-        createRating(topGun, user3, 6);
-        createRating(godFather, user1, 8);
-        createRating(godFather, user2, 9);
-        createRating(godFather, user3, 10);
+        prepareUsersAndRating(harryPotter, topGun, godFather);
 
         var result = movieRepository.findAllWithAvgRating(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "avg_rating")));
         assertEquals(0, result.getNumber());
@@ -122,6 +106,19 @@ class MovieRepositoryTest {
         var topGun = createMovie("top gun");
         var godFather = createMovie("The Godfather");
 
+        prepareUsersAndRating(harryPotter, topGun, godFather);
+
+        var result = movieRepository.findAllWithAvgRating(PageRequest.of(1, 1, Sort.by(Sort.Direction.DESC, "avg_rating")));
+        assertEquals(1, result.getNumber());
+        assertEquals(3, result.getTotalElements());
+        assertEquals(1, result.getContent().size());
+        assertEquals(3, result.getTotalPages());
+
+        assertEquals(harryPotter.getName(), result.getContent().getFirst().name());
+        assertEquals(6, result.getContent().getFirst().avgRating().intValue());
+    }
+
+    private void prepareUsersAndRating(Movie harryPotter, Movie topGun, Movie godFather) {
         var user1 = createUser("user1@gmail.com");
         var user2 = createUser("user2@gmail.com");
         var user3 = createUser("user3@gmail.com");
@@ -135,15 +132,6 @@ class MovieRepositoryTest {
         createRating(godFather, user1, 8);
         createRating(godFather, user2, 9);
         createRating(godFather, user3, 10);
-
-        var result = movieRepository.findAllWithAvgRating(PageRequest.of(1, 1, Sort.by(Sort.Direction.DESC, "avg_rating")));
-        assertEquals(1, result.getNumber());
-        assertEquals(3, result.getTotalElements());
-        assertEquals(1, result.getContent().size());
-        assertEquals(3, result.getTotalPages());
-
-        assertEquals(harryPotter.getName(), result.getContent().getFirst().name());
-        assertEquals(6, result.getContent().getFirst().avgRating().intValue());
     }
 
     private Rating createRating(Movie movie, User user, int ratingNum) {

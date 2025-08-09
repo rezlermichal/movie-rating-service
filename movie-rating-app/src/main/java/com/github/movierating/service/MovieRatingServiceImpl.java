@@ -57,10 +57,7 @@ public class MovieRatingServiceImpl implements MovieRatingService {
 
         validateRatingData(rating, movie, user);
 
-        //@TODO check csrf - learn something about it and comment why I disabled it
-        //@TODO micrometer?
-        //@TODO readme - how to run, how to compile, zminit liquibase, zminit testy - jedno dao, servisa, controller, integration tests with testcontainers
-        //@TODO dockerfile? logs in loki?
+        //@TODO readme - how to run, how to compile (only jar, for docker image e.g. maven jib plugin or standard approach with dockerfile), zminit liquibase, zminit testy - jedno dao, servisa, controller, integration tests with testcontainers, HTTP only, docker compose - prometheus, grafana, loki
         rating.setRatedAt(LocalDateTime.now());
         rating.setRating(ratingDto.rating());
 

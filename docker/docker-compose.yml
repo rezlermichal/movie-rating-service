@@ -22,6 +22,13 @@ services:
     ports:
       - "9090:9090"
 
+  loki:
+    image: grafana/loki:3.5.3
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
   # Grafana Service
   grafana:
     image: grafana/grafana:12.2.0-16636675413
@@ -32,6 +39,7 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
+      - loki
     volumes:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards

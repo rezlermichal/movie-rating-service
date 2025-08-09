@@ -26,7 +26,7 @@ public class SecurityConfig {
             })
             .httpBasic(Customizer.withDefaults())
             .formLogin(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable);
+            .csrf(AbstractHttpConfigurer::disable); // disabled for local testing purposes via HTTP (not HTTPS as of now)
 
         return http.build();
     }

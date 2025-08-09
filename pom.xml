@@ -26,6 +26,7 @@
         <mapstruct.version>1.6.3</mapstruct.version>
         <postgresql.version>42.7.7</postgresql.version>
         <commons-collections.version>3.2.2</commons-collections.version>
+        <loki-logback.version>1.5.1</loki-logback.version>
     </properties>
 
     <modules>
@@ -63,6 +64,12 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.loki4j</groupId>
+                <artifactId>loki-logback-appender</artifactId>
+                <version>${loki-logback.version}</version>
             </dependency>
 
             <dependency>
