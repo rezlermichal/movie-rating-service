@@ -57,11 +57,10 @@ public class MovieRatingServiceImpl implements MovieRatingService {
 
         validateRatingData(rating, movie, user);
 
-        //@TODO check validation - junit tests - jedno dao
         //@TODO check csrf - learn something about it and comment why I disabled it
         //@TODO micrometer?
         //@TODO readme - how to run, how to compile, zminit liquibase, zminit testy - jedno dao, servisa, controller, integration tests with testcontainers
-        //@TODO dockerfile?
+        //@TODO dockerfile? logs in loki?
         rating.setRatedAt(LocalDateTime.now());
         rating.setRating(ratingDto.rating());
 
