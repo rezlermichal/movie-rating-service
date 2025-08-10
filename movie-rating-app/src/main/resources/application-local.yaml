@@ -1,0 +1,4 @@
+logging:
+  level:
+    com.github.movierating: DEBUG
+    org.hibernate.SQL: DEBUG

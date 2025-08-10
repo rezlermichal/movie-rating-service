@@ -1,0 +1,330 @@
+---
+openapi: 3.0.1
+info:
+  title: Movie Rating App
+  description: Movie Rating App
+  version: v1
+paths:
+  "/rest/v1/movies":
+    get:
+      tags:
+        - Movies
+      summary: "Returns a paged list of movies"
+      operationId: findMovies
+      parameters:
+        - name: pageNumber
+          in: query
+          description: Number of the page (0 based)
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: pageSize
+          in: query
+          description: Required size of the page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: sortBy
+          in: query
+          description: Name of the field that should be used for sorting
+          schema:
+            $ref: "#/components/schemas/MovieSortableFields"
+        - name: order
+          in: query
+          description: Required direction of sorting (ascending or descending)
+          schema:
+            $ref: "#/components/schemas/SortOrder"
+        - name: extraFields
+          in: query
+          description: Additional fields that should be included projected
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ProjectionExtraField"
+      responses:
+        '200':
+          description: List of movies wrapped in page
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageMovieApiDto"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+  "/rest/v1/movies/{movieId}/ratings":
+    post:
+      tags:
+        - Movie rating
+      summary: "Create a new rating for a given movie"
+      operationId: createMovieRating
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the movie to rate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingApiDto"
+      responses:
+        '201':
+          description: Rating has been successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingDetailApiDto"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+        '401':
+          description: Unauthorized
+        '404':
+          description: Movie was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+  "/rest/v1/movies/{movieId}/ratings/{ratingId}":
+    put:
+      tags:
+        - Movie rating
+      summary: "Update existing rating for a given movie"
+      operationId: updateMovieRating
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the affected movie
+        - in: path
+          name: ratingId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the rating to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingApiDto"
+      responses:
+        '200':
+          description: Rating has been successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingDetailApiDto"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden to perform the operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+        '404':
+          description: Movie or rating was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+    delete:
+      tags:
+        - Movie rating
+      summary: "Delete existing rating for a given movie"
+      operationId: deleteMovieRating
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the affected movie
+        - in: path
+          name: ratingId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the rating to delete
+      responses:
+        '204':
+          description: Rating has been successfully deleted. No content is returned.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden to perform the operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+        '404':
+          description: Movie or rating was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseApiDto"
+components:
+  schemas:
+    ErrorResponseApiDto:
+      type: object
+      description: Information about an error
+      properties:
+        errors:
+          description: Errors
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorApiDto"
+    ErrorApiDto:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    PageMovieApiDto:
+      description: Page with movies
+      type: object
+      required:
+        - content
+        - pageNumber
+        - pageSize
+        - totalPages
+        - totalElements
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovieApiDto'
+        pageNumber:
+          description: Number of current page (0 based)
+          type: integer
+        pageSize:
+          description: Number of records on current page
+          type: integer
+        totalPages:
+          description: Number of all pages
+          type: integer
+        totalElements:
+          description: Number of all movies
+          type: integer
+          format: int64
+    MovieApiDto:
+      description: Information about a movie
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: Numeric ID of the movie
+          type: integer
+          format: int64
+        name:
+          description: Name of the movie
+          type: string
+        avgRating:
+          description: Average rating of the movie (scale 1-10)
+          type: decimal
+          nullable: true
+    RatingApiDto:
+      description: Rating - number between 1 and 10 (10 is the best)
+      required:
+        - rating
+      properties:
+        rating:
+          description: Rating - number between 1 and 10 (10 is the best)
+          type: integer
+          minimum: 1
+          maximum: 10
+    RatingDetailApiDto:
+      description: Information about a rating
+      required:
+        - id
+        - movie
+        - user
+        - rating
+        - ratedAt
+      properties:
+        id:
+          description: Numeric ID of the rating
+          type: integer
+          format: int64
+        movie:
+          description: Rated movie
+          $ref: "#/components/schemas/MovieApiDto"
+        user:
+          description: User who rated the movie
+          $ref: "#/components/schemas/UserApiDto"
+        rating:
+          description: Rating - number between 1 and 10 (10 is the best)
+          type: integer
+          minimum: 1
+          maximum: 10
+        ratedAt:
+          description: Date and time of the rating
+          type: string
+          format: date-time
+    UserApiDto:
+      description: Information about a user
+      required:
+        - id
+        - email
+      properties:
+        id:
+          description: Numeric ID of the user
+          type: integer
+          format: int64
+        email:
+          description: Email of the user
+          type: string
+    ProjectionExtraField:
+      description: Extra fields in projection (e.g. AVG_RATING)
+      type: string
+      enum:
+        - AVG_RATING
+    SortOrder:
+      type: string
+      enum:
+        - ASC
+        - DESC
+    MovieSortableFields:
+      type: string
+      example: "NAME"
+      enum:
+        - NAME
+        - AVG_RATING
+
