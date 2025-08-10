@@ -1,3 +1,5 @@
+name: movie-rating-db-and-monitoring
+
 services:
   # PostgreSQL Database Service
   postgres:
@@ -7,8 +9,10 @@ services:
       POSTGRES_USER: movie_rating_user
       POSTGRES_PASSWORD: movie_rating_user
       POSTGRES_DB: movie_rating
+    networks:
+      - movie-rating-db
     volumes:
-      - ./posgresql/data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
       - ./posgresql/init:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
@@ -19,6 +23,9 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - movie-rating-monitoring
     ports:
       - "9090:9090"
 
@@ -27,6 +34,8 @@ services:
     container_name: loki
     ports:
       - "3100:3100"
+    networks:
+      - movie-rating-monitoring
     command: -config.file=/etc/loki/local-config.yaml
 
   # Grafana Service
@@ -40,10 +49,19 @@ services:
     depends_on:
       - prometheus
       - loki
+    networks:
+      - movie-rating-monitoring
     volumes:
+      - grafana-data:/var/lib/grafana
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
 volumes:
   postgres-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  movie-rating-db:
+  movie-rating-monitoring:
