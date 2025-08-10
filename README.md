@@ -11,6 +11,8 @@
 - PostgreSQL used as a underlying database
 - Database tables are generated and filled in with initial data by init script as a part of docker-compose. For database change management I would use e.g. Liquibase in real project.
 - Spring security configured so it authenticates users against `users` DB table
+- JPA for entity relation mapping
+- Mapstruct for DTOs mapping
 - Junit tests: I haven't covered all the code but I created 1 class with tests for controller (@WebMvcTest), 1 class with test for service layer (using JUnit and Mockito) and 1 test for DAO layer (@DataJpaTest). Just to show how I write them.
 - Integration test: I've create integration tests for create/update/delete movie rating with use of `testcontainers` for DB level. It is a `@SpringBootTest` where I simply send HTTP requests to the application using `rest-assured` library. Once the requests are processed I check database records whether they were changed accordingly.
 - To make some things easier the application runs on HTTP only as of now
@@ -33,5 +35,10 @@ Please note that only jar file is built. For e.g. K8S deployment we would have t
 docker compose up
 ``
 - Once the project is compiled and dependencies run we can run the application from IDE using `com.github.movierating.MovieRatingApplication` class
-- The application is available on `http://localhost:8080`, Swagger doc `http://localhost:8080/swagger-ui/index.html`, Prometheus `http://localhost:9090/` and Grafana on `http://localhost:3000/` (admin/admin)
-- Following credentials can be used for testing purposes of application on local env: michal@gmail.com / password
+
+#### Application availability:
+1) `http://localhost:8080` For testing purposes of application on local env please use e.g.: michal@gmail.com / password
+2) Swagger doc `http://localhost:8080/swagger-ui/index.html`
+3) Actuator `http://localhost:8081/actuator`
+4) Prometheus `http://localhost:9090/` 
+5) Grafana on `http://localhost:3000/` (admin/admin)
